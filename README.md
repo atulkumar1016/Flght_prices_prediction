@@ -16,3 +16,4 @@ AirVista ✈️ is an intelligent and lightweight Flight Price Prediction system
 ✔️ Fully structured, lightweight, and easy to deploy on Render/Vercel/Railway
 
 ✔️ Designed using real patterns of Indian domestic flight data
+
