@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results - FlySmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="predict-body">
+
+    <div class="form-container results-container">
+        
+        <a href="/predict" class="back-link"><i class="fas fa-arrow-left"></i> Back to Prediction Form</a>
+        
+        <div class="flight-summary">
+            <h1>Flight Price Prediction</h1>
+            <p class="route-info">
+                <span class="location">{{ source }}</span> <i class="fas fa-long-arrow-alt-right"></i> <span class="location">{{ dest }}</span>
+            </p>
+            <p class="date-info">
+                <i class="fas fa-calendar-alt"></i> {{ date }} • <i class="fas fa-clock"></i> {{ dep_time }} Departure 
+            </p>
+        </div>
+        
+        <div class="best-deal-banner">
+            <p><i class="fas fa-tags"></i> **Haa! Ye Lo, Ye Best Hai!** Save an estimated **{{ savings }}**</p>
+            <div class="best-deal-details">
+                <span class="airline-highlight">{{ best_airline }}</span>
+                <span class="price-highlight">{{ best_price }}</span>
+            </div>
+        </div>
+        
+        <div class="results-grid">
+            
+            {% for airline_name, price in predictions.items() %}
+                {% set is_best = 'best-price' if airline_name == best_airline else '' %}
+                
+                <div class="result-card {{ is_best }}">
+                    <div class="airline-logo">
+                        <img src="{{ url_for('static', filename=airline_name.replace(' ', '') + '.png') }}" alt="{{ airline_name }} Logo">
+                    </div>
+                    <div class="airline-details">
+                        <p class="airline-name">{{ airline_name }}</p>
+                        <p class="model-note">{% if is_best %}Recommended Price{% else %}Model Estimate{% endif %}</p>
+                    </div>
+                    <div class="predicted-price">
+                        <span class="price-value">₹ {{ price | int | format_currency }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+        
+        <div class="disclaimer">
+            <p><i class="fas fa-info-circle"></i> Note: Prices are Machine Learning predictions based on historical data and may vary from current market prices.</p>
+        </div>
+        
+    </div>
+
+</body>
+</html>
+
+{% macro format_currency(value) -%}
+    {% if value is number %}
+        {{ '{:,.0f}'.format(value) }}
+    {% else %}
+        {{ value }}
+    {% endif %}
+{%- endmacro %}

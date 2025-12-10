@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Vista - India's Smartest Flight Price Predictor</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .predict-sec {
+            position: relative;
+            overflow: hidden;
+            padding-top: 180px;
+            padding-bottom: 180px;
+            color: white;
+            z-index: 1;
+        }
+        
+        .predict-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .predict-video-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(41, 128, 185, 0.25);
+            z-index: -1;
+        }
+
+        .predict-sec .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 2px solid #3b82f6;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: .3s;
+            display: inline-block;
+        }
+
+        .predict-sec .btn-primary:hover {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="#hero" class="logo-top-link">
+                <i class="fas fa-plane"></i> Air Vista
+            </a>
+            
+            <ul class="nav-menu">
+                <li><a href="#hero" class="nav-link active">Home</a></li> 
+                <li><a href="#tech" class="nav-link">Tech</a></li>
+                <li><a href="#data" class="nav-link">Dataset</a></li>
+                <li><a href="#airlines" class="nav-link">Airlines</a></li>
+                <li><a href="#predict" class="nav-link">Predict Now</a></li>
+                <li><a href="#visualization" class="nav-link">Visuals</a></li>
+                <li><a href="#about" class="nav-link">About</a></li> 
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='apl.mp4') }}" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        <div class="hero-content">
+            <h1>Intelligent Flight Pricing</h1>
+            <p class="main-title">Know the Best Price<br><span>Before You Book</span></p>
+            <p class="sub">Real ML • Real Indian Data • Real Accuracy</p>
+        </div>
+    </section>
+
+    <section class="tech-section" id="tech">
+        <div class="container">
+            <h2>Built with Real Machine Learning</h2>
+
+            <div class="tech-grid" style="margin-top: -20px;">
+
+                <div class="tech-card">
+                    <i class="fas fa-database" style="margin-bottom:6px;"></i>
+                    <h3>Data Preprocessing</h3>
+                    <p>Cleaned dataset, extracted journey date, time, duration.</p>
+                </div>
+
+                <div class="tech-card">
+                    <i class="fas fa-table" style="margin-bottom:6px;"></i>
+                    <h3>Train–Test Split</h3>
+                    <p>Data split into 80% training & 20% testing.</p>
+                </div>
+
+                <div class="tech-card">
+                    <i class="fas fa-chart-line" style="margin-bottom:6px;"></i>
+                    <h3>Linear Regression Model</h3>
+                    <p>Baseline model for accuracy comparison.</p>
+                </div>
+
+                <div class="tech-card">
+                    <i class="fas fa-tree" style="margin-bottom:6px;"></i>
+                    <h3>Random Forest Regressor</h3>
+                    <p>400-tree model with optimized depth.</p>
+                </div>
+
+                <div class="tech-card">
+                    <i class="fas fa-chart-bar" style="margin-bottom:6px;"></i>
+                    <h3>Model Evaluation</h3>
+                    <p>Measured accuracy using R² score & MSE for both models.</p>
+                </div>
+
+                <div class="tech-card">
+                    <i class="fas fa-screwdriver-wrench" style="margin-bottom:6px;"></i>
+                    <h3>Feature Engineering</h3>
+                    <p>Created Route Code, Duration, Dep/Arr hour & Additional Info.</p>
+                </div>
+
+                <div class="tech-card">
+                    <i class="fas fa-plane-departure" style="margin-bottom:6px;"></i>
+                    <h3>Multi-Airline Prediction</h3>
+                    <p>Predicts prices for all airlines individually using a loop.</p>
+                </div>
+
+                <div class="tech-card">
+                    <i class="fas fa-tag" style="margin-bottom:6px;"></i>
+                    <h3>Best Price Finder</h3>
+                    <p>Sorts all airline results & finds the cheapest fare.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="dataset-detail" id="data">
+        <video class="dataset-video" autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='ppl.mp4') }}" type="video/mp4">
+        </video>
+        <div class="dataset-video-overlay"></div>
+
+        <div class="container">
+            <h2>Real Indian Flight Data</h2>
+            <p class="dataset-main-text">50,000+ bookings • Cleaned & verified</p>
+            <div class="dataset-actions-big">
+                <a href="https://www.kaggle.com/datasets/jillanisofttech/flight-price-prediction-dataset" target="_blank" class="btn-big btn-preview">Preview</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="dark" id="airlines">
+        <div class="container">
+            <h2>Supported Airlines</h2>
+
+            <div class="airlines-grid">
+                <div class="airline-card indigo"><img src="{{ url_for('static', filename='indigo.png') }}"><div class="airline-name">IndiGo</div></div>
+                <div class="airline-card airindia"><img src="{{ url_for('static', filename='airindia.png') }}"><div class="airline-name">Air India</div></div>
+                <div class="airline-card vistara"><img src="{{ url_for('static', filename='Vistara.png') }}"><div class="airline-name">Vistara</div></div>
+                <div class="airline-card spicejet"><img src="{{ url_for('static', filename='SpiceJet.png') }}"><div class="airline-name">SpiceJet</div></div>
+                <div class="airline-card trujet"><img src="{{ url_for('static', filename='trujet.png') }}"><div class="airline-name">TruJet</div></div>
+                <div class="airline-card goair"><img src="{{ url_for('static', filename='goair.png') }}"><div class="airline-name">GoAir</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="predict-sec" id="predict">
+        <video class="predict-video" autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='prl.mp4') }}" type="video/mp4">
+        </video>
+        <div class="predict-video-overlay"></div>
+        
+        <div class="container">
+            <h2>Get Price Prediction in Seconds</h2>
+            <p class="section-desc">Watch real ML in action</p>
+            <a href="/predict" class="btn-primary">Start Predicting</a>
+        </div>
+    </section>
+
+    <section id="visualization" class="visualization-sec">
+        <div class="container">
+            <h2>Data Insights & Visualization <i class="fas fa-chart-bar"></i></h2>
+            <p class="section-desc">Key charts from our analysis. Click on any chart to enlarge.</p>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <h3>1. Flight Share by Airline</h3>
+                    <img class="chart-image" src="{{ url_for('static', filename='chart_airline_share.png') }}" data-caption="1. Flight Share by Airline"> 
+                </div>
+
+                <div class="chart-container">
+                    <h3>2. Source City Distribution</h3>
+                    <img class="chart-image" src="{{ url_for('static', filename='chart_source_city_distribution.png') }}" data-caption="2. Source City Distribution">
+                </div>
+
+                <div class="chart-container">
+                    <h3>3. Avg Price by Source City</h3>
+                    <img class="chart-image" src="{{ url_for('static', filename='chart_avg_price_by_source.png') }}" data-caption="3. Avg Price by Source City">
+                </div>
+
+                <div class="chart-container">
+                    <h3>4. Avg Price Trend by Airline</h3>
+                    <img class="chart-image" src="{{ url_for('static', filename='chart_avg_price_by_airline.png') }}" data-caption="4. Avg Price Trend by Airline">
+                </div>
+
+                <div class="chart-container">
+                    <h3>5. Price Distribution</h3>
+                    <img class="chart-image" src="{{ url_for('static', filename='chart_price_distribution.png') }}" data-caption="5. Price Distribution">
+                </div>
+                
+                </div>
+
+            <p class="closing-text-vis">
+                <i class="fas fa-chart-line"></i> These visualizations were crucial for Feature Selection & Model Training.
+            </p>
+        </div>
+    </section>
+
+    <section class="about-expanded" id="about">
+        <div class="container">
+            <h2 class="section-title">About Air Vista <i class="fas fa-globe-asia"></i></h2>
+            
+            <div class="about-content-simple">
+                
+                <h3 class="about-heading"><i class="fas fa-bullseye"></i> Vision & Mission</h3>
+                <p>
+                    Air Vista brings price transparency to Indian air travel using advanced Machine Learning. 
+                    We simplify complex pricing trends and empower travelers with instant, accurate predictions.
+                </p>
+                
+                <hr class="about-divider">
+
+                <h3 class="about-heading"><i class="fas fa-database"></i> Data Authenticity</h3>
+                <p>
+                    Our platform is backed by 50,000+ verified bookings from 2019–2025. 
+                    The model achieves an R² score of 0.87 with strict cross-validation.
+                </p>
+                
+                <hr class="about-divider">
+
+                <h3 class="about-heading"><i class="fas fa-cogs"></i> Technology Edge</h3>
+                <p>
+                    Powered by an optimized Random Forest Regressor tuned using GridSearch, 
+                    the system evaluates stops, timings, days-to-departure, and seasonal patterns 
+                    to deliver predictions in under 200ms.
+                </p>
+            </div>
+            
+            <p class="closing-text">
+                <i class="fas fa-plane-departure"></i> Built with precision, designed for smart Indian travelers.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            
+            <div class="copyright">
+                <p>© 2025 Air Vista • Made in India • Real Data • Real Results</p>
+            </div>
+
+            <div class="social-bar">
+                <div class="social-icons">
+                    <a href="https://www.linkedin.com/in/theatulkumar1016"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/atulkumar1016"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <div id="imageModal" class="img-modal">
+        <span class="modal-close" id="closeModal">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="modalCaption"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const navbar = document.querySelector('.navbar');
+            let navbarHeight = navbar ? navbar.offsetHeight : 74;
+            document.body.style.setProperty('--navbar-height', `${navbarHeight}px`);
+
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("img01");
+            const captionText = document.getElementById("modalCaption");
+            const closeModal = document.getElementById("closeModal");
+
+            const hideModal = () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            document.querySelectorAll('.chart-image').forEach(img => {
+                img.onclick = function(){
+                    modal.classList.add('active');
+                    modalImg.src = this.src;
+                    captionText.innerHTML = this.getAttribute('data-caption');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            closeModal.onclick = hideModal;
+
+            modal.onclick = function(event) {
+                if (event.target === modal) hideModal();
+            }
+            
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && modal.classList.contains('active')) hideModal();
+            });
+
+            const videoResetObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target.querySelector("video");
+                    if (video) {
+                        if (entry.isIntersecting) {
+                            video.currentTime = 0;
+                            video.play();
+                        } else {
+                            video.pause();
+                        }
+                    }
+                });
+            }, { threshold: 0.55 });
+
+            document.querySelectorAll('.hero, .dataset-detail, .predict-sec')
+                .forEach(sec => videoResetObserver.observe(sec));
+
+            const airlineObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.airline-card').forEach(card => airlineObserver.observe(card));
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    window.scrollTo({
+                        top: target.offsetTop - navbarHeight,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                document.querySelectorAll('section[id]').forEach(section => {
+                    if (window.scrollY >= section.offsetTop - navbarHeight - 10) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            window.dispatchEvent(new Event('scroll'));
+
+        });
+    </script>
+
+</body>
+</html>

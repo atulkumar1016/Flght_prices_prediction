@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlySmart - Flight Price Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.25);
+            z-index: -1;
+        }
+
+        .card {
+            background-color: rgba(255,255,255,0.65);
+            border-radius: 1rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        .glass-input {
+            background-color: rgba(255,255,255,0.75) !important;
+            border: 1px solid rgba(255,255,255,0.4);
+            backdrop-filter: blur(8px);
+        }
+        .glass-input:focus {
+            border-color: #009dff !important;
+            box-shadow: 0 0 0 3px rgba(0,157,255,0.25);
+        }
+
+        .selected-option {
+            background-color: rgba(0,121,255,0.12) !important;
+            border-color: #007bff !important;
+            font-weight: 700 !important;
+            color: #003f88 !important;
+        }
+
+        .swap-icon {
+            font-size: 42px;
+            font-weight: 900;
+            color: #000;
+            cursor: pointer;
+            user-select: none;
+            background: transparent !important;
+            transition: 0.2s ease;
+        }
+        .swap-icon:hover {
+            transform: scale(1.25);
+            color: #222;
+        }
+
+        .border-indigo-brand { border-color:#1f305e; }
+        .border-airindia-brand { border-color:#ff9933;}
+        .border-red-brand { border-color:#ef4444;}
+        /* UPDATED TRUJET COLOR TO LIGHT RED */
+        .border-trujet-brand { border-color:#fca5a5;} 
+        .border-vistara-brand { border-color:#9333ea;}
+        .border-goair-brand { border-color:#003f88;}
+
+        .text-price-green { color:#16a34a;}
+        .text-price-red { color:#dc2626;}
+
+        .tag-worst-price {
+            background:#f87171;
+            color:white;
+            padding:3px 8px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+        }
+
+        .logo-container {
+            width: 56px;
+            height: 56px;
+            background:white;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+
+<body class="p-6 md:p-12 min-h-screen flex items-center justify-center">
+
+<video autoplay muted loop class="video-background">
+    <source src="/static/cpl.mp4" type="video/mp4">
+</video>
+<div class="video-overlay"></div>
+
+<div class="max-w-4xl w-full">
+
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-extrabold text-white drop-shadow-lg">
+            <i class="fas fa-plane-departure text-[#00eeff] mr-2"></i> FlySmart Predict
+        </h1>
+        <p class="text-lg text-gray-200 drop-shadow">Get smart price predictions instantly.</p>
+    </div>
+
+    <div class="card p-8">
+        <h2 class="text-2xl font-bold mb-6 border-b pb-4">Journey Details</h2>
+
+        <form id="prediction-form" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <div>
+                <label class="font-semibold flex gap-2">
+                    <i class="fas fa-plane-departure text-blue-600"></i> Source City
+                </label>
+                <select id="source" name="source_code"
+                    class="glass-input w-full p-3 rounded-xl mt-1">
+                    <option value="" disabled selected>Select Departure</option>
+                    <option value="DEL">Delhi (DEL)</option>
+                    <option value="BOM">Mumbai (BOM)</option>
+                    <option value="BLR">Bangalore (BLR)</option>
+                    <option value="CCU">Kolkata (CCU)</option>
+                    <option value="HYD">Hyderabad (HYD)</option>
+                    <option value="COK">Cochin (COK)</option>
+                </select>
+            </div>
+
+            <div class="flex items-center justify-center">
+                <div id="swapBtn" class="swap-icon">⇄</div>
+            </div>
+
+            <div>
+                <label class="font-semibold flex gap-2">
+                    <i class="fas fa-plane-arrival text-purple-600"></i> Destination City
+                </label>
+                <select id="dest" name="dest_code"
+                    class="glass-input w-full p-3 rounded-xl mt-1">
+                    <option value="" disabled selected>Select Arrival</option>
+                    <option value="DEL">Delhi (DEL)</option>
+                    <option value="BOM">Mumbai (BOM)</option>
+                    <option value="BLR">Bangalore (BLR)</option>
+                    <option value="CCU">Kolkata (CCU)</option>
+                    <option value="HYD">Hyderabad (HYD)</option>
+                    <option value="COK">Cochin (COK)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="font-semibold">Departure Date</label>
+                <input type="date" id="date" name="flight_date"
+                    class="glass-input w-full p-3 rounded-xl mt-1">
+            </div>
+
+            <div>
+                <label class="font-semibold">Departure Time</label>
+                <input type="time" id="dep_time" name="departure_time"
+                    class="glass-input w-full p-3 rounded-xl mt-1">
+            </div>
+
+            <div class="md:col-span-3">
+                <button class="w-full p-4 bg-blue-600 text-white text-xl rounded-xl shadow-lg hover:bg-blue-700">
+                    <i class="fas fa-chart-line mr-2"></i> Predict All Airline Prices
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div id="result-box" class="card mt-8 p-8 hidden"></div>
+    <div id="error-box" class="card bg-red-200 border border-red-400 text-red-900 p-4 mt-8 hidden">
+        <b>Error:</b> <span id="error-message"></span>
+    </div>
+
+</div>
+
+<script>
+    source.addEventListener("change", ()=> source.classList.add("selected-option"));
+    dest.addEventListener("change", ()=> dest.classList.add("selected-option"));
+
+    swapBtn.addEventListener("click", ()=>{
+        let t = source.value;
+        source.value = dest.value;
+        dest.value = t;
+        source.classList.add("selected-option");
+        dest.classList.add("selected-option");
+    });
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        date.min = new Date().toISOString().split("T")[0];
+    });
+
+    document.getElementById("prediction-form").addEventListener("submit", function(e){
+        e.preventDefault();
+
+        let s = source.value;
+        let d = dest.value;
+        let doj = date.value;
+        let dep = dep_time.value;
+
+        if(!s || !d || !doj || !dep){
+            alert("Please fill all fields!");
+            return;
+        }
+
+        if(s === d){
+            alert("Source and destination cannot be same!");
+            return;
+        }
+
+        const [yy,mm,dd] = doj.split("-").map(Number);
+        const dep_hr = Number(dep.split(":")[0]);
+        const arr_hr = (dep_hr + 3) % 24; 
+
+        fetch("/predict-api",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                source_code:s,
+                dest_code:d,
+                day:dd,
+                month:mm,
+                year:yy,
+                dep_hour:dep_hr,
+                arr_hour:arr_hr
+            })
+        })
+        .then(res=>res.json())
+        .then(data=>{
+            if(data.error) showError(data.error);
+            else showResults(data);
+        })
+        .catch(err=>alert("Error: "+err));
+    });
+
+    function showError(msg){
+        document.getElementById("error-message").innerText = msg;
+        document.getElementById("error-box").classList.remove("hidden");
+    }
+
+    function showResults(data){
+        let box = document.getElementById("result-box");
+        box.classList.remove("hidden");
+
+        let prices = data.results.map(x=>parseFloat(x.price.replace(/,/g,'')));
+        let minPrice = Math.min(...prices);
+        let maxPrice = Math.max(...prices);
+
+        let html = `
+            <h2 class="text-2xl font-bold mb-4">Prediction Results</h2>
+            <p class="text-lg font-semibold border-b pb-3">${data.journey_date} | ${data.route}</p>
+            <div class="flex flex-col gap-5 pt-4">
+        `;
+
+        data.results.forEach(i=>{
+            let price = parseFloat(i.price.replace(/,/g,'')); 
+            let col = price===minPrice ? "text-price-green" : "text-price-red";
+            let tag = price===minPrice 
+                ? `<span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs">🔥 BEST</span>`
+                : price===maxPrice 
+                ? `<span class="tag-worst-price">⚠ WORST</span>`
+                : "";
+
+            let dur = `${Math.floor(i.duration/60)}h ${i.duration%60}m`;
+
+            html += `
+                <div class="p-5 rounded-xl shadow-lg border-l-4 ${getBrandColorClass(i.airline_name)} bg-white/90 flex justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="logo-container">
+                            <img src="/static/${getLogoPath(i.airline_name)}"/>
+                        </div>
+                        <div>
+                            <p class="text-xl font-bold">${i.airline_name}</p>
+                            <p class="text-gray-600 text-sm">Duration: ${dur} | Stops: 0</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-3xl font-extrabold ${col}">₹ ${i.price}</p>
+                        ${tag}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += "</div>";
+        box.innerHTML = html;
+    }
+
+    function getLogoPath(name){
+        const map={
+            "Air India":"airindia.png",
+            "Trujet":"trujet.png",
+            "GoAir":"goair.png",
+            "IndiGo":"indigo.png",
+            "SpiceJet":"SpiceJet.png",
+            "Vistara":"Vistara.png"
+        };
+        return map[name] || "default_plane_logo.png";
+    }
+
+    function getBrandColorClass(name){
+        if(name==="IndiGo") return "border-indigo-brand";
+        if(name==="Air India") return "border-airindia-brand";
+        if(name==="SpiceJet") return "border-red-brand";
+        // UPDATED TRUJET COLOR IN FUNCTION
+        if(name==="Trujet") return "border-trujet-brand";
+        if(name==="GoAir") return "border-goair-brand";
+        if(name==="Vistara") return "border-vistara-brand";
+        return "border-gray-300";
+    }
+</script>
+
+</body>
+</html>
